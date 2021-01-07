@@ -520,10 +520,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
+			// TODO 1.准备刷新操作
 			// Prepare this context for refreshing.
-			//准备刷新操作
 			prepareRefresh();
 
+			// TODO 2.获得刷新Bean容器
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
@@ -589,8 +590,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareRefresh() {
 		// Switch to active.
-		//1.设置开始时间
+		//1.TODO 设置开始时间
 		this.startupDate = System.currentTimeMillis();
+		//2.TODO设置开启关闭标志位
 		this.closed.set(false);
 		this.active.set(true);
 
@@ -604,15 +606,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
-		//2.初始化一些 资源
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
-		//TODO 关键点 3.获取环境
+		//TODO 关键点 3.获取环境变量并且设置一些属性值
 		getEnvironment().validateRequiredProperties();
 
-		//TODO 关键点 4.存储预刷新监听器
+		//TODO 关键点 4.设置监听器和需要发布的事件的集合
 		// Store pre-refresh ApplicationListeners...
 		if (this.earlyApplicationListeners == null) {
 			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
