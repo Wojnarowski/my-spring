@@ -1,14 +1,14 @@
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * @author lu shun zhi
- * @version 1.0.0
- * @date 2019/11/9 23:54
+ * 源码阅读
  */
 public class TestApplication {
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-		String name = applicationContext.getApplicationName();
-		System.out.println("name = " + name);
+		 //进入 ClassPathXmlApplicationContext
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("XXX.xml");
+		Object object = applicationContext.getBean("a");
+		System.out.println("name = " + object);
 	}
 }
