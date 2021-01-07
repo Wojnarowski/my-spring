@@ -520,14 +520,27 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
-			// TODO 1.准备刷新操作
+			/**
+			 * TODO 1.准备刷新操作
+			 * 		1.1设置容器的启动时间
+			 * 		1.2 设置活跃状态为true
+			 * 		1.3 设置关闭状态为false
+			 * 	 	1.4 获取Environment对象，并加载当前系统属性值到Environment中
+			 * 	 	1.5 准备监听器和事件的集合对象,默认为空的集合
+ 			 */
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
-			// TODO 2.获得刷新Bean容器 默认 DefaultListableBeanFactory
+			/**
+			 * TODO 2.创建容器对象 默认 DefaultListableBeanFactory
+			 *  加载xml 配置文件的属性值到当前工厂中,最重要的就是BeanDefinition
+ 			 */
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
+			/**
+			 *  TODO  初始化bean工厂  设置属性值
+			 */
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
@@ -535,6 +548,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
+				/**
+				 *  TODO  实例化 BFPP
+				 */
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -660,6 +676,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
+		//设置忽略的Aware 接口
 		// Configure the bean factory with context callbacks.
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
