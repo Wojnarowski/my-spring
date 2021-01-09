@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<bean id="person" class="Person">
-		<property name="userName" value="张三"></property>
+		<property name="userName" value="zhangsan"></property>
 		<property name="age" value="35"></property>
  	</bean>
 

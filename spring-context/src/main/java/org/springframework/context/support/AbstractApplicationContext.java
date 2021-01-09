@@ -629,6 +629,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		this.startupDate = System.currentTimeMillis();
 		//2.TODO设置开启关闭标志位
 		this.closed.set(false);
+		// 设置关闭标志位
 		this.active.set(true);
 
 		if (logger.isDebugEnabled()) {
@@ -641,6 +642,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		//初始化系统资源属性留给子类实现
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
