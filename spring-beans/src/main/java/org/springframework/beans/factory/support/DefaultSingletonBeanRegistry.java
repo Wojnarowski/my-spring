@@ -70,12 +70,25 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
+	/**
+	 * 一级缓存
+	 *  用于保存BeanName 和创建 bean 实例之间的关系
+	 */
 	/** Cache of singleton objects: bean name to bean instance. */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
+	/**
+	 * 三级缓存
+	 * 用于保存 BeanName 和创建Bean 的工厂之间的关系
+	 */
 	/** Cache of singleton factories: bean name to ObjectFactory. */
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
+	/**
+	 * 三级缓存
+	 * 保存BeanName 和创建 bean 实例之间的关系 与 singletonFactories 的不同之处在于 当一个单利bean放到这里之后，那么
+	 * 当bean还在创建过程中就可以通过getBean 方法获取到可以方便进行循环依赖的监测
+	 */
 	/** Cache of early singleton objects: bean name to bean instance. */
 	private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
