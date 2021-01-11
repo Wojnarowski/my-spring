@@ -437,7 +437,9 @@ public class BeanDefinitionParserDelegate {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
-		// 对bean 元素进行详细解析
+		// TODO 对bean 元素进行详细解析
+		//beanDefinitionMap
+		//beanDefinitionNames
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -527,8 +529,11 @@ public class BeanDefinitionParserDelegate {
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			//处理构造器属性
 			parseConstructorArgElements(ele, bd);
+			//处理property
 			parsePropertyElements(ele, bd);
+			//处理qualifier
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
