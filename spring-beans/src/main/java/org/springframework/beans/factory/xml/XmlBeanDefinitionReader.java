@@ -396,6 +396,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			// String[]- String Resource[]-Resource ,最终将Resource读取成一个Document文档对象,
 			// 根据文档的节点信息封装成一个个的BeanDefinition对象
 			Document doc = doLoadDocument(inputSource, resource);
+			//TODO  核心
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
@@ -516,8 +517,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		//TODO 对xml的beanDefinition 进行解析
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		// 完成具体的解析过程
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
