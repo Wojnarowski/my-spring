@@ -2,7 +2,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * 源码阅读
+ * 源码阅读测试类
  */
 public class TestApplication {
 	public static void main(String[] args) {
