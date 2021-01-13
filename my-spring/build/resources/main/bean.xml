@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:guozhizhong="http://www.guozhizhong.org/schema/user"
 	   xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd">
+	    http://www.guozhizhong.org/schema/user
+		http://www.guozhizhong.org/schema/user.xsd"
+		>
 
 	<bean id="person" class="Person">
 		<property name="userName" value="zhangsan"></property>
 		<property name="age" value="35"></property>
  	</bean>
+	<guozhizhong:user id="guozhizhong" userName="guozhizhong" email="guozhizhong@hotmail.com" password="123456"></guozhizhong:user>
 
 </beans>
