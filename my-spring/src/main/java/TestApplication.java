@@ -13,6 +13,7 @@ public class TestApplication {
 //		Person person = (Person) applicationContext.getBean("person");
 //		System.out.println(person.toString());
 		User user = (User)applicationContext.getBean("guozhizhong");
+
 		System.out.println(user.toString());
 	}
 }
