@@ -1,4 +1,4 @@
-package selftag;
+package com.guozz.selftag;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;

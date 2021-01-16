@@ -1,4 +1,4 @@
-package selftag;
+package com.guozz.selftag;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 

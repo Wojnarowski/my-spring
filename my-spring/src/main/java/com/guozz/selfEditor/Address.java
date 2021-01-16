@@ -1,4 +1,4 @@
-package selfEditor;
+package com.guozz.selfEditor;
 
 public class Address {
 
@@ -30,5 +30,14 @@ public class Address {
 
 	public void setTown(String town) {
 		this.town = town;
+	}
+
+	@Override
+	public String toString() {
+		return "Address{" +
+				"province='" + province + '\'' +
+				", city='" + city + '\'' +
+				", town='" + town + '\'' +
+				'}';
 	}
 }

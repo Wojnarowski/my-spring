@@ -1,4 +1,4 @@
-package selftag;
+package com.guozz.selftag;
 
 public class User {
 
