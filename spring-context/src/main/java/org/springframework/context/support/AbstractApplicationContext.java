@@ -550,7 +550,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory);
 
 				/**
-				 *  TODO  实例化 BFPP
+				 *  TODO  调用各种beanFactory处理器
 				 */
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
@@ -775,6 +775,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+
+		/**
+		 * 获取到当前应用程序上下文 BeanFactoryPostProcessor 变量的值,并且实例化调用执行所有已经注册的 beanFactoryPostProcessor
+		 * 默认配置下,通过getBeanFactoryPostProcessors()来获取已经注册了的BFPP,但是默认是空的,如果想扩展，如何进行扩展？
+		 */
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
