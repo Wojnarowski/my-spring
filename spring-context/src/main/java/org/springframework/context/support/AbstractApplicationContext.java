@@ -730,6 +730,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		//注入BFPP
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
+		/**
+		 * 增加AspectJ的支持,在java中织入分三种方式，分别为编译期织入,类加载器织入,运行期织入.
+		 * 		编译期织入是指在java编译器，采用特殊的编译器,将切面织入到java类中.
+		 * 		类加载期织入则指通过特殊的类加载器,在类字节码加载到jvm时,织入切面。
+		 * 		运行期织入是指采用cglib或者java动态代理进行切面的织入
+		 * 	aspectj提供了两种织入方式，第一种是通过特殊的编译器，在编译期间，将aspectj语言编写的切面织入到java类中。第二种是通过类加载期间织入
+		 * 	就是 load time weaving
+		 */
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.
 		if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
@@ -738,6 +746,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Register default environment beans.
+		//注册系统默认的bean到一级缓存中
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
