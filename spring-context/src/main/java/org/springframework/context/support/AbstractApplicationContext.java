@@ -539,12 +539,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			/**
-			 *  TODO  初始化bean工厂  设置属性值
+			 *  TODO  初始化bean工厂  设置属性值 beanfactory的准备工作
 			 */
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
 			try {
+				//子类覆盖方法做额外处理，此处一般不做任何扩展，但是可以查看web中的代码，有具体实现
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
