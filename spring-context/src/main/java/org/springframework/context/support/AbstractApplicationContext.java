@@ -703,7 +703,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		//设置忽略的Aware 接口
 		// Configure the bean factory with context callbacks.
+		//添加 BeanFactoryPostProcessor  BFPP
+		//此类用来完成某些Aware 接口的注入
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
+		/**
+		 * 设置要忽略的自动装配接口，这些接口的实现是容器通脱setter方法进行注入的
+		 * 所以在使用autowire进行注入的时候需要将这些接口进行忽略
+		 */
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -713,12 +720,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// BeanFactory interface not registered as resolvable type in a plain factory.
 		// MessageSource registered (and found for autowiring) as a bean.
+		// 设置几个特殊的自动装配规则,当在ioc进行初始化的时候如果有多个实现,那么就使用指定的对象进行注入
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
+		//注入BFPP
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.
