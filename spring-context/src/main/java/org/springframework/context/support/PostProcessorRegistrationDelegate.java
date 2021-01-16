@@ -56,9 +56,13 @@ final class PostProcessorRegistrationDelegate {
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
+		//无论是什么情况,优先执行BeanDefinitionRegistryPostProcessors
+		//将已经执行过的BFPP存储在 processedBeans 集合里面,防止重复执行。
 		Set<String> processedBeans = new HashSet<>();
 
+		//判断beanFactory类型是否是 BeanDefinitionRegistry类型,此处事DefaultListableBeanFactory,实现了BeanDefinitionRegistry接口
 		if (beanFactory instanceof BeanDefinitionRegistry) {
+			//类型转换
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
