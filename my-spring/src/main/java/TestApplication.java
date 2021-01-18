@@ -14,7 +14,7 @@ public class TestApplication {
 
 		//System.out.println(user.toString());
 
-		MyClasspathXmlApplicationContext applicationContext = new MyClasspathXmlApplicationContext("selfEditor.xml","beans.xml");
+		MyClasspathXmlApplicationContext applicationContext = new MyClasspathXmlApplicationContext("selfEditor.xml","bean.xml");
 		Customer customer = applicationContext.getBean(Customer.class);
 		System.out.println(customer.toString());
 	}
