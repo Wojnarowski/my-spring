@@ -11,9 +11,8 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 		System.out.println("-----------postProcessBeanDefinitionRegistry--------");
-		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(Teacher.class);
+		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(MySelfBeanDefinitionRegistryPostProcessor.class);
 		beanDefinitionBuilder.addPropertyValue("name","张三");
-		beanDefinitionBuilder.addPropertyValue("age",23);
 
 
 		registry.registerBeanDefinition("guozz",beanDefinitionBuilder.getBeanDefinition());

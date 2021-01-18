@@ -165,6 +165,12 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}
 
+
+		/**
+		 * 到目前为止，入参beanFactoryPostProcessors 和容器找那个所有的BeanDefinitionRegistryPostProcessors已经全部处理完毕
+		 * 下面开始处理容器中所有的BeanFactoryPostProcessors
+		 * 可能会包含一些实现类,只实现了BeanFactoryPostProcessor,并没有实现BeanDefinitionRegistryPostProcessor接口
+		 */
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
 		//获取所有的BeanFactoryPostProcessor接口实现类
@@ -224,6 +230,10 @@ final class PostProcessorRegistrationDelegate {
 
 		// Clear cached merged bean definitions since the post-processors might have
 		// modified the original metadata, e.g. replacing placeholders in values...
+		/**
+		 * 清除元素缓存
+		 * 因为后置处理器可能已经修改了原始元素.例如,替换值中的占位符
+		 */
 		beanFactory.clearMetadataCache();
 	}
 
