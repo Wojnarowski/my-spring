@@ -79,6 +79,7 @@ final class PostProcessorRegistrationDelegate {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
 					//执行 BeanDefinitionRegistryPostProcessor 接口中的 postProcessBeanDefinitionRegistry 方法
+					//执行子类的方法
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					//添加到 registryProcessors  集合中
 					registryProcessors.add(registryProcessor);
