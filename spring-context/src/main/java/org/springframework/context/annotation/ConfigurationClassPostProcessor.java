@@ -285,11 +285,13 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Return immediately if no @Configuration classes were found
+		//如果没有，直接返回
 		if (configCandidates.isEmpty()) {
 			return;
 		}
 
 		// Sort by previously determined @Order value, if applicable
+		//如果适用，根据设置的order排序
 		configCandidates.sort((bd1, bd2) -> {
 			int i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());
 			int i2 = ConfigurationClassUtils.getOrder(bd2.getBeanDefinition());
@@ -297,19 +299,26 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		});
 
 		// Detect any custom bean name generation strategy supplied through the enclosing application context
+		// 判断是不是  SingletonBeanRegistry 类型
 		SingletonBeanRegistry sbr = null;
 		if (registry instanceof SingletonBeanRegistry) {
+			//类型强制转换
 			sbr = (SingletonBeanRegistry) registry;
+			//判断是否有beanName生成器
 			if (!this.localBeanNameGeneratorSet) {
+				//获取自定义的beanName生成策略
 				BeanNameGenerator generator = (BeanNameGenerator) sbr.getSingleton(
 						AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR);
 				if (generator != null) {
+					//设置组件扫描生成策略
 					this.componentScanBeanNameGenerator = generator;
+					//设置 impor beanName生成策略
 					this.importBeanNameGenerator = generator;
 				}
 			}
 		}
 
+		//如果环境为空，设置新的标准环境
 		if (this.environment == null) {
 			this.environment = new StandardEnvironment();
 		}
