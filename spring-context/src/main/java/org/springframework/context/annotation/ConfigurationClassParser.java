@@ -288,6 +288,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @PropertySource annotations
+		//如果类中加了@PropertySource 注解,那么就解析properties文件,并将属性添加到spring上下文中
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -301,12 +302,19 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @ComponentScan annotations
+		//处理@ComponentScan 或者 @ComponentScan 注解,并将扫描包下的所有bean转换成填充后的ConfigurationClass
+		//此处就是将自定义的bean加载到ioc容器,因为扫描到的类也可能添加到了@ComponentScan 和@ComponentScan 注解,因此需要递归解析
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
+				/**
+				 * 解析 @ComponentScan 和@ComponentScan配置的扫描包所包含的类
+				 * 比如 basePackage =com.xxx,那么在这一步会扫描出这个包及子包下的class,然后将其解析成BeanDefinition
+				 * beanDefinition 等价于  BeanDefinitionHolder
+				 */
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
@@ -461,14 +469,17 @@ class ConfigurationClassParser {
 	 * @throws IOException if loading a property source failed
 	 */
 	private void processPropertySource(AnnotationAttributes propertySource) throws IOException {
+		//获取name属性
 		String name = propertySource.getString("name");
 		if (!StringUtils.hasLength(name)) {
 			name = null;
 		}
+		//获取encoding属性
 		String encoding = propertySource.getString("encoding");
 		if (!StringUtils.hasLength(encoding)) {
 			encoding = null;
 		}
+		//获取value属性
 		String[] locations = propertySource.getStringArray("value");
 		Assert.isTrue(locations.length > 0, "At least one @PropertySource(value) location is required");
 		boolean ignoreResourceNotFound = propertySource.getBoolean("ignoreResourceNotFound");
@@ -479,8 +490,11 @@ class ConfigurationClassParser {
 
 		for (String location : locations) {
 			try {
+				//处理属性值的占位符
 				String resolvedLocation = this.environment.resolveRequiredPlaceholders(location);
+				//将指定位置的占位符抓换成resource对象
 				Resource resource = this.resourceLoader.getResource(resolvedLocation);
+				//添加resource对象为属性资源
 				addPropertySource(factory.createPropertySource(name, new EncodedResource(resource, encoding)));
 			}
 			catch (IllegalArgumentException | FileNotFoundException | UnknownHostException ex) {
