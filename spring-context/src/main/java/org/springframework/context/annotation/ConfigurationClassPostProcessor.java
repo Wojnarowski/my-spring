@@ -324,13 +324,20 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Parse each @Configuration class
+		//实例化Parser对象，设置初始化参数
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
 
+		/**
+		 * 创建两个集合
+		 * candidates 存放BeanDefinitionHolder 对象
+		 * alreadyParsed 存放扫描包下的类
+		 */
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
+			//解析带有 @Controller.@import,@importResource，@ComponentScan,@ComponentScans,@Bean的BeanDefinition
 			parser.parse(candidates);
 			parser.validate();
 
