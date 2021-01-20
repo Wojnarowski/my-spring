@@ -245,7 +245,7 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
-			//解析各种注解
+			//TODO  解析各种注解  重要
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
 		}
 		while (sourceClass != null);
@@ -270,6 +270,20 @@ class ConfigurationClassParser {
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			//首先递归处理内部类
+			/**
+			 *
+			 * @Configuration
+			 * @Component
+			 * public class MyMember
+			 *
+			 * @Component
+			 * @Configuration
+			 * @ComponentScan
+			 *	class innerclass{
+			 *
+			 *	}
+			 *
+			 */
 			processMemberClasses(configClass, sourceClass);
 		}
 
@@ -351,26 +365,34 @@ class ConfigurationClassParser {
 	 * Register member (nested) classes that happen to be configuration classes themselves.
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
+		//找到内部类
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();
+		//如果内部类不为空
 		if (!memberClasses.isEmpty()) {
 			List<SourceClass> candidates = new ArrayList<>(memberClasses.size());
+			//循环内部类
 			for (SourceClass memberClass : memberClasses) {
 				if (ConfigurationClassUtils.isConfigurationCandidate(memberClass.getMetadata()) &&
 						!memberClass.getMetadata().getClassName().equals(configClass.getMetadata().getClassName())) {
 					candidates.add(memberClass);
 				}
 			}
+			//对配置类进行排序操作
 			OrderComparator.sort(candidates);
 			for (SourceClass candidate : candidates) {
 				if (this.importStack.contains(configClass)) {
+					//出现配置类循环导入,则直接报错
 					this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 				}
 				else {
+					//将配置类放入栈
 					this.importStack.push(configClass);
 					try {
+						//调用processConfigurationClass方法，因为内部类中还可能包含内部类,所以需要做循环解析，实际工作中是不会有这种情况的
 						processConfigurationClass(candidate.asConfigClass(configClass));
 					}
 					finally {
+						//解析完毕出栈
 						this.importStack.pop();
 					}
 				}
