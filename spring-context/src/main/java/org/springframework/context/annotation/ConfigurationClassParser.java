@@ -245,10 +245,12 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
+			//解析各种注解
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
 		}
 		while (sourceClass != null);
 
+		//将解析的配置类存储起来,这样回到parse方法时,能取到值
 		this.configurationClasses.put(configClass, configClass);
 	}
 
@@ -264,8 +266,10 @@ class ConfigurationClassParser {
 	protected final SourceClass doProcessConfigurationClass(ConfigurationClass configClass, SourceClass sourceClass)
 			throws IOException {
 
+		//是否被Component注解修饰
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
+			//首先递归处理内部类
 			processMemberClasses(configClass, sourceClass);
 		}
 
