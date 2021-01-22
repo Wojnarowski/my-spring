@@ -314,6 +314,7 @@ class ConfigurationClassParser {
 				 * 解析 @ComponentScan 和@ComponentScan配置的扫描包所包含的类
 				 * 比如 basePackage =com.xxx,那么在这一步会扫描出这个包及子包下的class,然后将其解析成BeanDefinition
 				 * beanDefinition 等价于  BeanDefinitionHolder
+				 * TODO
 				 */
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
