@@ -225,10 +225,15 @@ class ConfigurationClassParser {
 			return;
 		}
 
+		/**
+		 * 第一次进入的时候,configurationClasses的size为0,existingClass肯定为null,在此处处理configuration重复import
+		 * 如果同一个配置类被处理两次,两次都属于被import的组合并导入类，返回。如果配置不是被导入的则溢出就的使用新的配置类
+		 */
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
 				if (existingClass.isImported()) {
+					//如果需要处理的配置类configclass在已经分析处理的配置类记录中存在,合并两者的importBy属性
 					existingClass.mergeImportedBy(configClass);
 				}
 				// Otherwise ignore new imported config class; existing non-imported class overrides it.
@@ -243,6 +248,12 @@ class ConfigurationClassParser {
 		}
 
 		// Recursively process the configuration class and its superclass hierarchy.
+		/**
+		 * 处理配置类,由于配置类可用存在父类,所以需要将configClass变成sourceClass去解析，然后返回sourceClass的父类。
+		 * 如果此时父类为空,则不会进行while循环去解析,如果父类不为空,则会循环的去解析父类.
+		 * SourceClass的意义,简单的包装类，目的是为了以统一的方式处理带有注解的类,不管这些类是如果加载的
+		 * 如果无法解析,可以把它当做一个黑盒
+		 */
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
 			//TODO  解析各种注解  重要
@@ -362,9 +373,11 @@ class ConfigurationClassParser {
 		}
 
 		// Process default methods on interfaces
+		//处理接口的默认方法实现,从jdk8开始，接口中的方法可以有自己的默认实现,因此如果这个接口的方法加了@Bean注解,也需要解析
 		processInterfaces(configClass, sourceClass);
 
 		// Process superclass, if any
+		//解析父类,如果被解析的配置类继承了某个父类,那么配置的父类也会被进行解析
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			String superclass = sourceClass.getMetadata().getSuperClassName();
 			if (superclass != null && !superclass.startsWith("java") &&
