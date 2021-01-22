@@ -163,7 +163,7 @@ class ConfigurationClassParser {
 
 
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
-		//遍历configCandidates
+		//TODO 遍历configCandidates
 		for (BeanDefinitionHolder holder : configCandidates) {
 			//获取beanDefinition
 			BeanDefinition bd = holder.getBeanDefinition();
