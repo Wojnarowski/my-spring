@@ -342,6 +342,7 @@ class ConfigurationClassParser {
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
 		// Process any @ImportResource annotations
+		//处理 @ImportResource 注解,导入Spring配置文件
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
@@ -354,6 +355,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process individual @Bean methods
+		//处理添加了@Bean注解的方法,将@Bean方法转化为BeanMethod对象,保存到集合中
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
