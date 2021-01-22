@@ -560,8 +560,11 @@ class ConfigurationClassParser {
 	 * Returns {@code @Import} class, considering all meta-annotations.
 	 */
 	private Set<SourceClass> getImports(SourceClass sourceClass) throws IOException {
+		//创建集合存储 有@Import注解的类
 		Set<SourceClass> imports = new LinkedHashSet<>();
+		//创建集合为了实现递归调用
 		Set<SourceClass> visited = new LinkedHashSet<>();
+		//收集@Import注解的类
 		collectImports(sourceClass, imports, visited);
 		return imports;
 	}
@@ -585,10 +588,12 @@ class ConfigurationClassParser {
 		if (visited.add(sourceClass)) {
 			for (SourceClass annotation : sourceClass.getAnnotations()) {
 				String annName = annotation.getMetadata().getClassName();
+				//递归调用其他可能包含@Import注解的类
 				if (!annName.equals(Import.class.getName())) {
 					collectImports(annotation, imports, visited);
 				}
 			}
+			//获取@Import注解的值
 			imports.addAll(sourceClass.getAnnotationAttributes(Import.class.getName(), "value"));
 		}
 	}
