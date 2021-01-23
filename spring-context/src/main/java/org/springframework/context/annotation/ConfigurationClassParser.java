@@ -340,6 +340,7 @@ class ConfigurationClassParser {
 						bdCand = holder.getBeanDefinition();
 					}
 					//是否是一个配置类,并设置full或者lite注解
+
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
 						//通过递归方法进行解析
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
