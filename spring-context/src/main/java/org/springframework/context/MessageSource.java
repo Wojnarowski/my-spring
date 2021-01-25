@@ -21,6 +21,7 @@ import java.util.Locale;
 import org.springframework.lang.Nullable;
 
 /**
+ * 此接口提供了出戏里消息的策略,包含了信息的国际化和包含参数信息的替换
  * Strategy interface for resolving messages, with support for the parameterization
  * and internationalization of such messages.
  *
