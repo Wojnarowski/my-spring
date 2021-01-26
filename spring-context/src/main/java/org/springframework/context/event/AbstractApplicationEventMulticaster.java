@@ -104,14 +104,19 @@ public abstract class AbstractApplicationEventMulticaster
 
 	@Override
 	public void addApplicationListener(ApplicationListener<?> listener) {
+		//锁定监听器助手对象
 		synchronized (this.retrievalMutex) {
 			// Explicitly remove target for a proxy, if registered already,
 			// in order to avoid double invocations of the same listener.
+			//如果已经注册,则显示删除已经注册的监听器对象,为了避免调用重复的监听器对象
 			Object singletonTarget = AopProxyUtils.getSingletonTarget(listener);
 			if (singletonTarget instanceof ApplicationListener) {
+				//删除监听器对象
 				this.defaultRetriever.applicationListeners.remove(singletonTarget);
 			}
+			//新增监听器对象
 			this.defaultRetriever.applicationListeners.add(listener);
+			//清空监听器助手类
 			this.retrieverCache.clear();
 		}
 	}
@@ -417,8 +422,9 @@ public abstract class AbstractApplicationEventMulticaster
 	 */
 	private class ListenerRetriever {
 
+		//ApplicationListener对象
 		public final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
-
+		//ApplicationListener对应bean名称
 		public final Set<String> applicationListenerBeans = new LinkedHashSet<>();
 
 		private final boolean preFiltered;
