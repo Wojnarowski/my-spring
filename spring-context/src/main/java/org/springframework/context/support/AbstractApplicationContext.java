@@ -569,7 +569,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 				/**
-				 *  TODO 实例化 广播器
+				 *  TODO 实例化广播器  观察者模式
 				 */
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
