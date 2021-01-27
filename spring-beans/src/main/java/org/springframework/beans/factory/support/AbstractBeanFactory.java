@@ -1074,16 +1074,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public boolean isFactoryBean(String name) throws NoSuchBeanDefinitionException {
+		//拿到真正的beanName
 		String beanName = transformedBeanName(name);
+		//尝试从一级缓存中取
 		Object beanInstance = getSingleton(beanName, false);
 		if (beanInstance != null) {
+			//如果存在则直接判断是不是FactoryBean对象
 			return (beanInstance instanceof FactoryBean);
 		}
 		// No singleton instance found -> check bean definition.
+		//如果缓存中不存在此beanName && 父beanFactory 是ConfigurableBeanFactory,则调用父BeanFactory判断是否为FactoryBean
 		if (!containsBeanDefinition(beanName) && getParentBeanFactory() instanceof ConfigurableBeanFactory) {
 			// No bean definition found in this factory -> delegate to parent.
 			return ((ConfigurableBeanFactory) getParentBeanFactory()).isFactoryBean(name);
 		}
+		//通过MergedLocalBeanDefinition 来检查此beanName 的bean 是否为FactoryBean
 		return isFactoryBean(beanName, getMergedLocalBeanDefinition(beanName));
 	}
 
