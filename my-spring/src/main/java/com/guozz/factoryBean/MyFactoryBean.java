@@ -3,10 +3,10 @@ package com.guozz.factoryBean;
 import com.guozz.selftag.User;
 import org.springframework.beans.factory.FactoryBean;
 
-public class MyFactoryBean implements FactoryBean {
+public class MyFactoryBean implements FactoryBean<User> {
 	@Override
-	public Object getObject() throws Exception {
-		return new User();
+	public User getObject() throws Exception {
+		return new User("张三","222@222.com","12321321");
 	}
 
 	@Override
