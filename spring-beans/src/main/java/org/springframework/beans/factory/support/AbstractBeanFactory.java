@@ -257,17 +257,23 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+			//当实现了FactoryBean接口的对象,需要获取具体的对象的时候需要调用此方法进行获取
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
 		else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
+			/**
+			 * 当前对象是单例的时候会常识解决循环依赖问题,但是原型模式下
+			 * 如果存在循环依赖的情况,直接抛出异常
+			 */
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
 			// Check if bean definition exists in this factory.
+			//获取父容器
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
@@ -289,6 +295,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
+			//如果不做类型检查,那么表示要创见bean,此处在集合中做一条记录
 			if (!typeCheckOnly) {
 				markBeanAsCreated(beanName);
 			}
@@ -1736,6 +1743,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				if (!this.alreadyCreated.contains(beanName)) {
 					// Let the bean definition get re-merged now that we're actually creating
 					// the bean... just in case some of its metadata changed in the meantime.
+					/**
+					 * 当实际要创建bean的时候,需要对当前bean来进行重新合并,防止一些元素数据被修改
+					 */
 					clearMergedBeanDefinition(beanName);
 					this.alreadyCreated.add(beanName);
 				}
