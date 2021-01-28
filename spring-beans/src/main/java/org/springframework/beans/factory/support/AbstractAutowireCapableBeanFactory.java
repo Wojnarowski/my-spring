@@ -497,7 +497,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Prepare method overrides.
-		//准备验证覆盖的方法
+		//准备验证覆盖的方法  lookup-method和replaced-method
 		try {
 			mbdToUse.prepareMethodOverrides();
 		}
@@ -554,11 +554,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeanCreationException {
 
 		// Instantiate the bean.
+		//这个beanWrapper是用来持有床现出来的bean对象的
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
+			//如果是单例对象,从factorybean实例缓存中溢出当前bean定义信息
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			//根据执行bean使用对应的策略创建新的是俩,如:工厂方法,构造函数主动注入,简单初始化
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -1175,16 +1178,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
 
+		//判断当前beanDefinition中是否包含实例供应器,此处相当于一个回调方法,利用回调方法来创建bean
 		Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 		if (instanceSupplier != null) {
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
+		//如果工厂方法不为空,利用工厂方法初始化策略
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
 
 		// Shortcut when re-creating the same bean...
+		/**
+		 * 一个类可能有多个构造器,所以spring得根据参数个数,类型确定需要调用的构造器
+		 * 在食用构造器创建实例后,Spring会将解析过后确定下来的构造器或工厂保存在缓存中
+		 * 避免再次创建相同bean时再次解析
+		 */
 		boolean resolved = false;
 		boolean autowireNecessary = false;
 		if (args == null) {
