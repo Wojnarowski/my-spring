@@ -255,6 +255,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							"' that is not fully initialized yet - a consequence of a circular reference");
 				}
 				else {
+
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
