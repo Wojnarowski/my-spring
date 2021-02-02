@@ -15,7 +15,7 @@ public class MyInstantiationAwareBeanPostProcessor implements InstantiationAware
 			enhancer.setSuperclass(beanClass);
 			enhancer.setCallback(new MethodInterceptor());
 			BeforeInstantiation beforeInstantiation = (BeforeInstantiation) enhancer.create();
-			System.out.println("创建代理对象---");
+			System.out.println("创建代理对象---"+beforeInstantiation);
 			return beforeInstantiation;
 		}
 		return null;
@@ -27,10 +27,7 @@ public class MyInstantiationAwareBeanPostProcessor implements InstantiationAware
 		return true;
 	}
 
-	@Override
-	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) throws BeansException {
-		return pvs;
-	}
+
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -43,5 +40,12 @@ public class MyInstantiationAwareBeanPostProcessor implements InstantiationAware
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		System.out.println("beanName="+beanName+"---执行 postProcessAfterInitialization 方法");
 		return bean;
+	}
+
+	@Override
+	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) throws BeansException {
+		System.out.println("beanName="+beanName+"---执行 postProcessProperties 方法");
+
+		return pvs;
 	}
 }
