@@ -192,7 +192,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	private boolean enforceInitMethod = true;
 
 	private boolean enforceDestroyMethod = true;
-
+	//是否应用程序本身自定义的而不是用户之前定义的,创建aop的值是true
 	private boolean synthetic = false;
 
 	private int role = BeanDefinition.ROLE_APPLICATION;
