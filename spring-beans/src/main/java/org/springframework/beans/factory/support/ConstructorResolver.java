@@ -408,19 +408,24 @@ class ConstructorResolver {
 		//工厂方法所属类的名字
 		String factoryBeanName = mbd.getFactoryBeanName();
 		if (factoryBeanName != null) {
+			//判断是否存在factoryBean,factoryBean创建出来的是工厂自身,会报异常,就等于无限创建了
 			if (factoryBeanName.equals(beanName)) {
 				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName,
 						"factory-bean reference points back to the same bean definition");
 			}
+			//获取factoryBean
 			factoryBean = this.beanFactory.getBean(factoryBeanName);
+			//单例并且存在于一级缓存
 			if (mbd.isSingleton() && this.beanFactory.containsSingleton(beanName)) {
 				throw new ImplicitlyAppearedSingletonException();
 			}
 			factoryClass = factoryBean.getClass();
+			//设置为非静态
 			isStatic = false;
 		}
 		else {
 			// It's a static factory method on the bean class.
+			//没有 beanFactory实例
 			if (!mbd.hasBeanClass()) {
 				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName,
 						"bean definition declares neither a bean class nor a factory-bean reference");
@@ -430,14 +435,19 @@ class ConstructorResolver {
 			isStatic = true;
 		}
 
+		//准备使用的工厂方法
 		Method factoryMethodToUse = null;
+		//准备使用的参数包装器
 		ArgumentsHolder argsHolderToUse = null;
+		//准备使用的参数
 		Object[] argsToUse = null;
 
 		if (explicitArgs != null) {
+			//如果有显示参数就使用这些参数
 			argsToUse = explicitArgs;
 		}
 		else {
+			//解析出参数
 			Object[] argsToResolve = null;
 			synchronized (mbd.constructorArgumentLock) {
 				factoryMethodToUse = (Method) mbd.resolvedConstructorOrFactoryMethod;
@@ -454,12 +464,20 @@ class ConstructorResolver {
 			}
 		}
 
+		/**
+		 * 如果没有解析过,就获取factoryClass的用户定义类型,因为此时factoryClass可能是CGLIB代理
+		 * 所以要获取父类的类型,如果工厂方式是唯一的,就是没重载的,就获取解析的工厂方法,如果不为空,就添加到不可变列表里
+		 * 如果为空的话,就要去找出factoryClass的以及父类的所有方法,进一步找出方法修饰符一致且名字跟工厂方法名字相同的且是bean注解的方法,并放入列表里
+		 */
 		if (factoryMethodToUse == null || argsToUse == null) {
 			// Need to determine the factory method...
 			// Try all methods with this name to see if they match the given arguments.
+			//获取用户定义的类
 			factoryClass = ClassUtils.getUserClass(factoryClass);
 
+			//方法集合
 			List<Method> candidateList = null;
+			//如果工厂方法是唯一的且不重载的
 			if (mbd.isFactoryMethodUnique) {
 				if (factoryMethodToUse == null) {
 					factoryMethodToUse = mbd.getResolvedFactoryMethod();
@@ -468,16 +486,21 @@ class ConstructorResolver {
 					candidateList = Collections.singletonList(factoryMethodToUse);
 				}
 			}
+			//没找到工厂方法
 			if (candidateList == null) {
 				candidateList = new ArrayList<>();
+				//获取factoryClass以及父类的所有方法作为候选方法
 				Method[] rawCandidates = getCandidateMethods(factoryClass, mbd);
+				//过滤出修饰符一样,工厂方法名一样且是bean的注解方法
 				for (Method candidate : rawCandidates) {
+					//如果是isStatic修饰,并且名字跟工厂方法一致
 					if (Modifier.isStatic(candidate.getModifiers()) == isStatic && mbd.isFactoryMethod(candidate)) {
 						candidateList.add(candidate);
 					}
 				}
 			}
 
+			//如果只获取到一个方法&&入参为空 && 没有设置构造方法参数
 			if (candidateList.size() == 1 && explicitArgs == null && !mbd.hasConstructorArgumentValues()) {
 				Method uniqueCandidate = candidateList.get(0);
 				if (uniqueCandidate.getParameterCount() == 0) {
@@ -492,14 +515,18 @@ class ConstructorResolver {
 				}
 			}
 
+
 			Method[] candidates = candidateList.toArray(new Method[0]);
 			AutowireUtils.sortFactoryMethods(candidates);
 
+			//构造器参数值
 			ConstructorArgumentValues resolvedValues = null;
 			boolean autowiring = (mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
+			//模糊的工厂方法集合
 			Set<Method> ambiguousFactoryMethods = null;
 
+			//最小参数设置
 			int minNrOfArgs;
 			if (explicitArgs != null) {
 				minNrOfArgs = explicitArgs.length;
