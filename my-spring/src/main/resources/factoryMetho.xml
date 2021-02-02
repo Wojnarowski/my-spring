@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="person" class="com.guozz.factoryMethod.PersonStaticFactory" factory-method="getPerson">
+		<constructor-arg value="lisi"></constructor-arg>
+	</bean>
+	<bean id="personInstanceFactory" class="com.guozz.factoryMethod.PersonInstanceFactory"></bean>
+
+	<bean id="person2" class="Person" factory-method="getPerson" factory-bean="personInstanceFactory">
+		<constructor-arg value="wangwu"></constructor-arg>
+	</bean>
+</beans>

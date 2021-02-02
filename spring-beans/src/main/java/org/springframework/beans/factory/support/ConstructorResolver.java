@@ -393,13 +393,19 @@ class ConstructorResolver {
 	public BeanWrapper instantiateUsingFactoryMethod(
 			String beanName, RootBeanDefinition mbd, @Nullable Object[] explicitArgs) {
 
+		//创建包装类
 		BeanWrapperImpl bw = new BeanWrapperImpl();
+		//初始化包装类
 		this.beanFactory.initBeanWrapper(bw);
 
+		//工厂实例
 		Object factoryBean;
+		//工厂类型
 		Class<?> factoryClass;
+		//是否是静态的
 		boolean isStatic;
 
+		//工厂方法所属类的名字
 		String factoryBeanName = mbd.getFactoryBeanName();
 		if (factoryBeanName != null) {
 			if (factoryBeanName.equals(beanName)) {
