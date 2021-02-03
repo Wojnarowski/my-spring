@@ -565,16 +565,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			//根据执行bean使用对应的策略创建新的是俩,如:工厂方法,构造函数主动注入,简单初始化
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
+		// 从包装类中获取原始的bean
 		final Object bean = instanceWrapper.getWrappedInstance();
+		//获取bean的具体的class属性
 		Class<?> beanType = instanceWrapper.getWrappedClass();
+		//如果不等于NullBean类型,那么修改目标类型
 		if (beanType != NullBean.class) {
 			mbd.resolvedTargetType = beanType;
 		}
 
 		// Allow post-processors to modify the merged bean definition.
+		//允许beanPostProcessor去修改合并的beanDefinition
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
+					//修改合并bean的定义
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
