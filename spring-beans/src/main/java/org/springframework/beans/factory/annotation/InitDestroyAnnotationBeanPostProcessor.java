@@ -254,12 +254,16 @@ public class InitDestroyAnnotationBeanPostProcessor
 				}
 			});
 
+			//将本次循环中获取到的对应方法集合保存到总集合中
 			initMethods.addAll(0, currInitMethods);
+			//销毁方法父类晚于子类
 			destroyMethods.addAll(currDestroyMethods);
+			//获取当前的父类
 			targetClass = targetClass.getSuperclass();
 		}
+		//如果当前类存在父类且父类不为object基类则循环对父类进行处理
 		while (targetClass != null && targetClass != Object.class);
-
+		//有一个不为空就返回一个emptyLifecycleMetadata 对象，否则就返回空的LifecycleMetadata对象
 		return (initMethods.isEmpty() && destroyMethods.isEmpty() ? this.emptyLifecycleMetadata :
 				new LifecycleMetadata(clazz, initMethods, destroyMethods));
 	}
