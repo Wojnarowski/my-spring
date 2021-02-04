@@ -199,15 +199,21 @@ public class InitDestroyAnnotationBeanPostProcessor
 	private LifecycleMetadata findLifecycleMetadata(Class<?> clazz) {
 		if (this.lifecycleMetadataCache == null) {
 			// Happens after deserialization, during destruction...
+			//在bean销毁过程中调用,反序列化后调用
 			return buildLifecycleMetadata(clazz);
 		}
 		// Quick check on the concurrent map first, with minimal locking.
+		//尝试从缓存中获取元数据
 		LifecycleMetadata metadata = this.lifecycleMetadataCache.get(clazz);
+		//如果缓存失败,则加锁创建元数据
 		if (metadata == null) {
 			synchronized (this.lifecycleMetadataCache) {
+				//加锁获取元数据防止多线程重复之星
 				metadata = this.lifecycleMetadataCache.get(clazz);
 				if (metadata == null) {
+					//如果没有获取到,构建生命周期元数据
 					metadata = buildLifecycleMetadata(clazz);
+					//将构建好的元数据放入缓存中
 					this.lifecycleMetadataCache.put(clazz, metadata);
 				}
 				return metadata;
@@ -221,14 +227,17 @@ public class InitDestroyAnnotationBeanPostProcessor
 			return this.emptyLifecycleMetadata;
 		}
 
+		//实例化后的回调方法@PostConstruct
 		List<LifecycleElement> initMethods = new ArrayList<>();
+		//销毁前的回调方法@PreDestroy
 		List<LifecycleElement> destroyMethods = new ArrayList<>();
+		//获取正在处理的目标类
 		Class<?> targetClass = clazz;
 
 		do {
 			final List<LifecycleElement> currInitMethods = new ArrayList<>();
 			final List<LifecycleElement> currDestroyMethods = new ArrayList<>();
-
+			//循环获取当前类中的所有方法并依次对其调用，第二个参数为lambda表达式
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				if (this.initAnnotationType != null && method.isAnnotationPresent(this.initAnnotationType)) {
 					LifecycleElement element = new LifecycleElement(method);
