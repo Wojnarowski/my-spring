@@ -554,6 +554,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
 
+		/**TODO*****************************实例化对象**************************************/
 		// Instantiate the bean.
 		//这个beanWrapper是用来持有床现出来的bean对象的
 		BeanWrapper instanceWrapper = null;
@@ -589,7 +590,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				mbd.postProcessed = true;
 			}
 		}
-
+		/**TODO****************************初始化**************************************/
+		/**
+		 * 当实例化完成后,要开始进行赋值操作了,但是赋值的时候，值的类型可能是引用类型,需要从
+		 * spring容器中进行获取某个对象来完成创建工作.而此时需要引用的对象可能被创建了,也可能
+		 * 没被创建。如果被创建了，那么直接获取即可，如果没被创建，在这个获取过程中就需要涉及到
+		 * 对象的创建过程。而内部对象的创建过程中又会有其他的依赖,其他的依赖中又可能包含当前对象
+		 * 而此时当前对象还没有创建完成,所以此时产生了循环依赖的问题
+		 */
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
