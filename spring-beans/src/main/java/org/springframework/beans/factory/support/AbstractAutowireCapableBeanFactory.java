@@ -597,6 +597,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		 * 没被创建。如果被创建了，那么直接获取即可，如果没被创建，在这个获取过程中就需要涉及到
 		 * 对象的创建过程。而内部对象的创建过程中又会有其他的依赖,其他的依赖中又可能包含当前对象
 		 * 而此时当前对象还没有创建完成,所以此时产生了循环依赖的问题
+		 *
 		 */
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
