@@ -1471,31 +1471,50 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			pvs = newPvs;
 		}
 
+		//工厂是否拥有	InstantiationAwareBeanPostProcessors
 		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
+		//mbd.getDependencyCheck()默认返回 DEPENDENCY_CHECK_NONE 不检查
+		//是否需要检查依赖
 		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
 
+		//经过筛选的PropertyDescriptor数组,存放着排除忽略的依赖或忽略项上的定义的属性
 		PropertyDescriptor[] filteredPds = null;
+		//如果工厂拥有InstantiationAwareBeanPostProcessors,那么处理对应流程,主要是对几个注解的解析的赋值工作，包含了两个关键子类是CommonAnnotationBeanPostProcessor,AutoWiredAnnotationBeanPostProcessor
 		if (hasInstAwareBpps) {
+			//如果pvs为null
 			if (pvs == null) {
+				//常识获取mbd的propertyValues
 				pvs = mbd.getPropertyValues();
 			}
+			//遍历工厂内所有的后置处理器
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
+				//如果bp 是InstantiationAwareBeanPostProcessor 的实例
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
+					//将bp 强转成 InstantiationAwareBeanPostProcessor 对象
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+					//postProcessProperties::在工厂将给定的属性值应用到给定的Bean之前,对他们进行后置处理,不需要任何描述扫描符,该回调方法在未来版本中会被删掉
+					//取而代之的是 postProcessPropertyValues 回调方法
+					//让ibp对pvs增阿基对bw的Bean对象的propertyValue,或编辑pvs的propertyValue
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
+					//如果pvs为null
 					if (pvsToUse == null) {
 						if (filteredPds == null) {
 							filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
 						}
+						//回到ipd的postProcessPropertyValues方法
 						pvsToUse = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
+						//如果 pvsToUse 为null 将终止该方法赋值,以跳过属性填充
 						if (pvsToUse == null) {
 							return;
 						}
 					}
+					//让pvs引用pvsToUse
 					pvs = pvsToUse;
 				}
 			}
 		}
+
+		//是否需要依赖检查
 		if (needsDepCheck) {
 			if (filteredPds == null) {
 				filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
@@ -1503,7 +1522,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			checkDependencies(beanName, mbd, filteredPds, pvs);
 		}
 
+		//如果pvs不为null
 		if (pvs != null) {
+			//应用给定的属性值,解决任何在这个bean工厂运行时其他bean的引用，必须使用深拷贝,所以我们不会永久的修改这个属性
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
