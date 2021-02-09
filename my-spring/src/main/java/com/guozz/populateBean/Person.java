@@ -1,10 +1,14 @@
 package com.guozz.populateBean;
 
+import java.util.List;
+
 public class Person {
 
 	private String  name;
 
 	private Address address;
+
+	private List<Book> bookList;
 
 
 	public String getName() {
@@ -23,6 +27,13 @@ public class Person {
 		this.address = address;
 	}
 
+	public List<Book> getBookList() {
+		return bookList;
+	}
+
+	public void setBookList(List<Book> bookList) {
+		this.bookList = bookList;
+	}
 
 	@Override
 	public String toString() {

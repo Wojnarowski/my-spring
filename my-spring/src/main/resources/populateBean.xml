@@ -6,6 +6,15 @@
 	<bean id="person" class="com.guozz.populateBean.Person">
 		<property name="name" value=""></property>
 		<property name="address" ref="address"></property>
+		<property name="bookList" >
+			<list>
+				<bean id="book1" class="com.guozz.populateBean.Book">
+					<property name="name" value="多线程"></property>
+					<property name="author" value="张三"></property>
+					<property name="price" value="1000"></property>
+				</bean>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="address" class="com.guozz.populateBean.Address">
@@ -15,6 +24,8 @@
 		<property name="street" value="古冶区"></property>
 
 	</bean>
+
+
 
 
 
