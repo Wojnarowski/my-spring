@@ -1524,7 +1524,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		//如果pvs不为null
 		if (pvs != null) {
-			//应用给定的属性值,解决任何在这个bean工厂运行时其他bean的引用，必须使用深拷贝,所以我们不会永久的修改这个属性
+			//TODO 应用给定的属性值,解决任何在这个bean工厂运行时其他bean的引用，必须使用深拷贝,所以我们不会永久的修改这个属性
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1835,6 +1835,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Set our (possibly massaged) deep copy.
+		//值处理完，开始赋值
 		try {
 			bw.setPropertyValues(new MutablePropertyValues(deepCopy));
 		}
