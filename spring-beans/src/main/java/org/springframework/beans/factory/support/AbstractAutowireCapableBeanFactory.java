@@ -1773,18 +1773,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (converter == null) {
 			converter = bw;
 		}
-		//
+		//BeanDefinitionValueResolver:在bean工厂实现中使用Helper类,它将beanDefinition对象中包含的值解析为应用于 目标bean实例的实际值
 		BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this, beanName, mbd, converter);
 
 		// Create a deep copy, resolving any references for values.
+		//创建深拷贝,解析任何值引用
 		List<PropertyValue> deepCopy = new ArrayList<>(original.size());
+		//是否还需要解析标记
 		boolean resolveNecessary = false;
 		for (PropertyValue pv : original) {
+			//pv是否被转换
 			if (pv.isConverted()) {
+				//将pv放入deepCopy中
 				deepCopy.add(pv);
 			}
+			//如果属性没有被解析过
 			else {
+				//获取属性的名字
 				String propertyName = pv.getName();
+				//获取未经转换的值
 				Object originalValue = pv.getValue();
 				if (originalValue == AutowiredPropertyMarker.INSTANCE) {
 					Method writeMethod = bw.getPropertyDescriptor(propertyName).getWriteMethod();
@@ -1793,7 +1800,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					}
 					originalValue = new DependencyDescriptor(new MethodParameter(writeMethod, 0), true);
 				}
+				//TODO 解析
 				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
+				//默认转换后的值是刚解析出来的值
 				Object convertedValue = resolvedValue;
 				boolean convertible = bw.isWritableProperty(propertyName) &&
 						!PropertyAccessorUtils.isNestedOrIndexedProperty(propertyName);
@@ -1806,6 +1815,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					if (convertible) {
 						pv.setConvertedValue(convertedValue);
 					}
+					//将pv放入到深拷贝中去
 					deepCopy.add(pv);
 				}
 				else if (convertible && originalValue instanceof TypedStringValue &&

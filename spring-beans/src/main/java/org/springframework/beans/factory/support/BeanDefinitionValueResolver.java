@@ -199,11 +199,15 @@ class BeanDefinitionValueResolver {
 			});
 			return copy;
 		}
+		//对TypedStringValue进行解析
 		else if (value instanceof TypedStringValue) {
 			// Convert value to target type here.
+			//此处将value转换为目标类型,将value强转为TypedStringValue对象
 			TypedStringValue typedStringValue = (TypedStringValue) value;
+			//在TypeStringValue封装的value可解析成表达式的情况下,将typedStringValue封装的value评估为表达式并解析出表达式的值
 			Object valueObject = evaluate(typedStringValue);
 			try {
+				//typedStringValue中解析对应的值
 				Class<?> resolvedTargetType = resolveTargetType(typedStringValue);
 				if (resolvedTargetType != null) {
 					return this.typeConverter.convertIfNecessary(valueObject, resolvedTargetType);
