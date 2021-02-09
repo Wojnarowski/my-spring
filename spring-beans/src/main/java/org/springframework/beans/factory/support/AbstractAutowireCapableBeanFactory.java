@@ -1767,10 +1767,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			original = Arrays.asList(pvs.getPropertyValues());
 		}
 
+		//获取用户自定义的类型转换器
 		TypeConverter converter = getCustomTypeConverter();
+		//如果为空,则直接把包装好的类赋值给converter 因为BeanWrapper 实现了TypeConverter 接口，所以可以赋值
 		if (converter == null) {
 			converter = bw;
 		}
+		//
 		BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this, beanName, mbd, converter);
 
 		// Create a deep copy, resolving any references for values.
