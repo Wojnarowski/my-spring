@@ -616,9 +616,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
-			//对bean属性填充,将各个属性值注入,其中,可能存在依赖于其他bean的属性,则会选择递归初始化依赖的bean
+			//TODO 对bean属性填充,将各个属性值注入,其中,可能存在依赖于其他bean的属性,则会选择递归初始化依赖的bean
 			populateBean(beanName, mbd, instanceWrapper);
-			//执行初始化逻辑
+			// TODO 执行初始化逻辑
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1881,6 +1881,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #applyBeanPostProcessorsAfterInitialization
 	 */
 	protected Object initializeBean(final String beanName, final Object bean, @Nullable RootBeanDefinition mbd) {
+		//获取安全管理器
 		if (System.getSecurityManager() != null) {
 			AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
 				invokeAwareMethods(beanName, bean);
@@ -1888,6 +1889,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			//执行对应的AWARE方法
 			invokeAwareMethods(beanName, bean);
 		}
 
@@ -1912,17 +1914,24 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	private void invokeAwareMethods(final String beanName, final Object bean) {
+		//如果bean 是Aware实例
 		if (bean instanceof Aware) {
+			//如果bean是BeanNameAware实例
 			if (bean instanceof BeanNameAware) {
+				//调用bean 的setBeanName方法
 				((BeanNameAware) bean).setBeanName(beanName);
 			}
+			//如果bean是BeanClassLoaderAware实例
 			if (bean instanceof BeanClassLoaderAware) {
 				ClassLoader bcl = getBeanClassLoader();
 				if (bcl != null) {
+					//调用bean 的setBeanClassLoader方法
 					((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);
 				}
 			}
+			//如果bean是BeanFactoryAware实例
 			if (bean instanceof BeanFactoryAware) {
+				//调用bean 的setBeanFactory方法
 				((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
 			}
 		}
