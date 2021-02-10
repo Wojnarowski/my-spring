@@ -1914,6 +1914,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	private void invokeAwareMethods(final String beanName, final Object bean) {
+		//TODO 为什么只处理这三个Aware接口？前面进行了设置ignore
 		//如果bean 是Aware实例
 		if (bean instanceof Aware) {
 			//如果bean是BeanNameAware实例
