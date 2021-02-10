@@ -410,15 +410,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName)
 			throws BeansException {
-
+		//初始化返回结果为existingBean
 		Object result = existingBean;
+		//遍历该工厂创建的bean的BeanPostProcessors列表
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			/**
+			 * 在任何bean初始化回调之前(如初始化Bean的afterPropertySet或自定故意的init方法)
+			 * 将此BeanPostProcessor 应用到给定的新Bean实例.bean已经填充了属性值。返回的bean实例可能是原始的bean的包装类
+			 * 默认实现按原样返回给定的Bean
+			 */
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
+			//如果current为null
 			if (current == null) {
+				//直接返回result,中断后续的beanPostProcessor处理
 				return result;
 			}
+			//让result引用processor返回的结果,使其经过所有的BeanPostProcessor对象的后置处理器层层包装。
 			result = current;
 		}
+		//返回经过所有的BeanPostProcessor对象的后置处理的层层包装的result
 		return result;
 	}
 
@@ -1895,6 +1905,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			//在初始化之前执行对应的BeanPostProcessor
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
@@ -1914,7 +1925,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	private void invokeAwareMethods(final String beanName, final Object bean) {
-		//TODO 为什么只处理这三个Aware接口？前面进行了设置ignore
+		/**
+		 * TODO 为什么只处理这三个Aware接口？前面进行了设置ignore
+		 *
+		 */
 		//如果bean 是Aware实例
 		if (bean instanceof Aware) {
 			//如果bean是BeanNameAware实例
