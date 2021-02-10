@@ -1910,6 +1910,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
+			//执行对应的InitMethods
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1967,13 +1968,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void invokeInitMethods(String beanName, final Object bean, @Nullable RootBeanDefinition mbd)
 			throws Throwable {
 
+		/**
+		 * isInitializingBean：当bean的所有属性都被BeanFactory设置好以后，Bean需要执行相应的接口;例如执行自定义初始化,或者仅仅是检查所有的强制属性是否已经设置好。
+		 * bean 是InitializingBean实例标记
+		 */
 		boolean isInitializingBean = (bean instanceof InitializingBean);
+		//isExternallyManagedInitMethod是否外部手管理的Init方法名
+		//如果bean是InitialLizingBean实例 && (mbd为null || 'afterPropertiesSet' 不是外部手管理的Init方法名)
 		if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Invoking afterPropertiesSet() on bean with name '" + beanName + "'");
 			}
 			if (System.getSecurityManager() != null) {
 				try {
+					//已特权方式调用bean 的afterPropertiesSet方法
 					AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
 						((InitializingBean) bean).afterPropertiesSet();
 						return null;
@@ -1984,6 +1992,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 			else {
+				//调用afterPropertiesSet方法
 				((InitializingBean) bean).afterPropertiesSet();
 			}
 		}
