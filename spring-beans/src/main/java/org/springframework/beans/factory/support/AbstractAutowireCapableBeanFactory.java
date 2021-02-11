@@ -590,7 +590,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					//修改合并bean的定义
+					//TODO 修改合并bean的定义
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -606,7 +606,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		 * spring容器中进行获取某个对象来完成创建工作.而此时需要引用的对象可能被创建了,也可能
 		 * 没被创建。如果被创建了，那么直接获取即可，如果没被创建，在这个获取过程中就需要涉及到
 		 * 对象的创建过程。而内部对象的创建过程中又会有其他的依赖,其他的依赖中又可能包含当前对象
-		 * 而此时当前对象还没有创建完成,所以此时产生了循环依赖的问题
+		 * 而此时当前对象还没有创建完成,所以此时产生了循环依赖的问题.
 		 *
 		 */
 		// Eagerly cache singletons to be able to resolve circular references
@@ -641,9 +641,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
+		//三级缓存判断
 		if (earlySingletonExposure) {
+			//从缓存中拿出具体对象
 			Object earlySingletonReference = getSingleton(beanName, false);
+			//earlySingletonReference 只有当检测到循环依赖的时候才不为空
 			if (earlySingletonReference != null) {
+				//如果exposedObject没有在初始化方法中被改变,也就是没有被增强
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 				}
@@ -655,6 +659,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 							actualDependentBeans.add(dependentBean);
 						}
 					}
+					//因为bean创建后所依赖的bean一定是已经创建的
+					//actualDependentBeans 不为空则表示当前bean创建后其依赖的bean却没有后全部创建完,也就是说存在循环依赖
 					if (!actualDependentBeans.isEmpty()) {
 						throw new BeanCurrentlyInCreationException(beanName,
 								"Bean with name '" + beanName + "' has been injected into other beans [" +
@@ -670,6 +676,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Register bean as disposable.
 		try {
+			//注册bean对象,方便后续在销毁的时候销毁对象
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
 		catch (BeanDefinitionValidationException ex) {
