@@ -793,6 +793,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					if (candidate.getTypeParameters().length > 0) {
 						try {
 							// Fully resolve parameter names and argument values.
+							//解析所有的参数名称和参数值
 							Class<?>[] paramTypes = candidate.getParameterTypes();
 							String[] paramNames = null;
 							ParameterNameDiscoverer pnd = getParameterNameDiscoverer();
