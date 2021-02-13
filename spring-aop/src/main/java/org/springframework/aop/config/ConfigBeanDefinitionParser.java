@@ -196,7 +196,9 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	}
 
 	private void parseAspect(Element aspectElement, ParserContext parserContext) {
+		//<aop:aspect> id 属性
 		String aspectId = aspectElement.getAttribute(ID);
+		//aop ref属性,必须配置,代表切面
 		String aspectName = aspectElement.getAttribute(REF);
 
 		try {
@@ -204,6 +206,8 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			List<BeanDefinition> beanDefinitions = new ArrayList<>();
 			List<BeanReference> beanReferences = new ArrayList<>();
 
+			//解析<aop:aspect> 下的declare-parents节点
+			//采用的是DeclareParentsAdvisor作为beanClass加载
 			List<Element> declareParents = DomUtils.getChildElementsByTagName(aspectElement, DECLARE_PARENTS);
 			for (int i = METHOD_INDEX; i < declareParents.size(); i++) {
 				Element declareParentsElement = declareParents.get(i);
