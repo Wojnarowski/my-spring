@@ -318,6 +318,7 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
+			//真正的判断增强器是否适合当前类型
 			if (canApply(candidate, clazz, hasIntroductions)) {
 				eligibleAdvisors.add(candidate);
 			}
