@@ -8,6 +8,7 @@ public class TransactionTest {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 		applicationContext.register(TransactionConfig.class);
+		applicationContext.register(MyConfiguration.class);
 		applicationContext.refresh();
 		BookService bean = applicationContext.getBean(BookService.class);
 		bean.checkout("zhangsan",1);
