@@ -391,7 +391,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 					retVal = VavrDelegate.evaluateTryFailure(retVal, txAttr, status);
 				}
 			}
-
+			//成功后提交事务,会进行资源的储量,释放连接,恢复挂起的事务等操作
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}

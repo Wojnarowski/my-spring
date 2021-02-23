@@ -353,6 +353,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			logger.debug("Committing JDBC transaction on Connection [" + con + "]");
 		}
 		try {
+			//JDBC连接提交
 			con.commit();
 		}
 		catch (SQLException ex) {
