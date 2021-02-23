@@ -285,36 +285,47 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 			//为当前事务设置隔离级别
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
+			//设置先前隔离级别
 			txObject.setPreviousIsolationLevel(previousIsolationLevel);
+			//设置是否只读
 			txObject.setReadOnly(definition.isReadOnly());
 
 			// Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
 			// so we don't want to do it unnecessarily (for example if we've explicitly
 			// configured the connection pool to set it already).
+			//关闭自动提交
 			if (con.getAutoCommit()) {
+				//设置需要恢复自动提交
 				txObject.setMustRestoreAutoCommit(true);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Switching JDBC Connection [" + con + "] to manual commit");
 				}
+				//关闭自动提交
 				con.setAutoCommit(false);
 			}
 
+			//设置事务是否为只读
 			prepareTransactionalConnection(con, definition);
+			//标记激活事务
 			txObject.getConnectionHolder().setTransactionActive(true);
 
+			//设置事务超时时间
 			int timeout = determineTimeout(definition);
 			if (timeout != TransactionDefinition.TIMEOUT_DEFAULT) {
 				txObject.getConnectionHolder().setTimeoutInSeconds(timeout);
 			}
 
 			// Bind the connection holder to the thread.
+			//绑定我们的数据源和连接到我们的同步管理器上,把数据源作为key,数据库连接作为value,设置到线程变量中
 			if (txObject.isNewConnectionHolder()) {
+				//将当前获取的连接绑定到当前线程
 				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
 			}
 		}
 
 		catch (Throwable ex) {
 			if (txObject.isNewConnectionHolder()) {
+				//释放数据库连接
 				DataSourceUtils.releaseConnection(con, obtainDataSource());
 				txObject.setConnectionHolder(null, false);
 			}
