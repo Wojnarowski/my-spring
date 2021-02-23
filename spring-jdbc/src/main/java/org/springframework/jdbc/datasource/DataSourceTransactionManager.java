@@ -246,7 +246,9 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 		 */
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
+		//非新创建连接为false
 		txObject.setConnectionHolder(conHolder, false);
+		//返回事务对象
 		return txObject;
 	}
 
