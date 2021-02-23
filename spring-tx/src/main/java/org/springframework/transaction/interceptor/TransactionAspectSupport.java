@@ -337,6 +337,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		//获取事务管理器对象
 		final TransactionManager tm = determineTransactionManager(txAttr);
 
+		//响应式判断
 		if (this.reactiveAdapterRegistry != null && tm instanceof ReactiveTransactionManager) {
 			ReactiveTransactionSupport txSupport = this.transactionSupportCache.computeIfAbsent(method, key -> {
 				if (KotlinDetector.isKotlinType(method.getDeclaringClass()) && KotlinDelegate.isSuspend(method)) {
@@ -356,10 +357,13 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		}
 
 		PlatformTransactionManager ptm = asPlatformTransactionManager(tm);
+		//获取连接点的唯一标识 类名+方法名
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 
+		//声明式事务处理
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+			//创建 TransactionInfo
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
@@ -560,6 +564,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			@Nullable TransactionAttribute txAttr, final String joinpointIdentification) {
 
 		// If no name specified, apply method identification as transaction name.
+		//如果没有名称指定则使用方法唯一标识,并使用DelegatingTransactionAttribute封装txAttr
 		if (txAttr != null && txAttr.getName() == null) {
 			txAttr = new DelegatingTransactionAttribute(txAttr) {
 				@Override
@@ -568,7 +573,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			};
 		}
-
+		//事务状态
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {

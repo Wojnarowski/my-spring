@@ -1048,6 +1048,7 @@ public abstract class ClassUtils {
 	 */
 	public static String getQualifiedMethodName(Method method, @Nullable Class<?> clazz) {
 		Assert.notNull(method, "Method must not be null");
+		//如果clazz不为null,就用class，否则使用声明method的类对象,然后取出类对象的全类名,加上'.',在加上方法名,最后返回出去
 		return (clazz != null ? clazz : method.getDeclaringClass()).getName() + '.' + method.getName();
 	}
 

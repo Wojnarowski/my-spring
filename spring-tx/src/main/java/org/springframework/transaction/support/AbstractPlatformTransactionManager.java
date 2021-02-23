@@ -342,8 +342,10 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			throws TransactionException {
 
 		// Use defaults if no transaction definition given.
+		//如果没有事务定义信息则使用默认的事务管理器定义信息
 		TransactionDefinition def = (definition != null ? definition : TransactionDefinition.withDefaults());
 
+		//获取事务 TODO重要
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 
