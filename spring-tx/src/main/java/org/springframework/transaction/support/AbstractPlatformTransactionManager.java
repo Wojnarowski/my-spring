@@ -416,6 +416,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					"Existing transaction found for transaction marked with propagation 'never'");
 		}
 
+		//挂起事务
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NOT_SUPPORTED) {
 			if (debugEnabled) {
 				logger.debug("Suspending current transaction");
