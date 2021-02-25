@@ -858,21 +858,25 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	private void processRollback(DefaultTransactionStatus status, boolean unexpected) {
 		try {
+			//意外的回滚
 			boolean unexpectedRollback = unexpected;
 
 			try {
+				//回滚前完成回调
 				triggerBeforeCompletion(status);
-
+				//有保存点回滚到保存点
 				if (status.hasSavepoint()) {
 					if (status.isDebug()) {
 						logger.debug("Rolling back transaction to savepoint");
 					}
 					status.rollbackToHeldSavepoint();
 				}
+				//当前状态是一个新事务
 				else if (status.isNewTransaction()) {
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction rollback");
 					}
+					//回滚
 					doRollback(status);
 				}
 				else {
@@ -882,6 +886,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 							if (status.isDebug()) {
 								logger.debug("Participating transaction failed - marking existing transaction as rollback-only");
 							}
+							//设置连接要回滚标记,也就是全局回滚
 							doSetRollbackOnly(status);
 						}
 						else {
