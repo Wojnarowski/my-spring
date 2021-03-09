@@ -316,7 +316,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			}
 
 			// Bind the connection holder to the thread.
-			//绑定我们的数据源和连接到我们的同步管理器上,把数据源作为key,数据库连接作为value,设置到线程变量中
+			//TODO 绑定我们的数据源和连接到我们的同步管理器上,把数据源作为key,数据库连接作为value,设置到线程变量中
 			if (txObject.isNewConnectionHolder()) {
 				//将当前获取的连接绑定到当前线程
 				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
